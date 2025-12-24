@@ -731,20 +731,25 @@ window.app = {
     $('.car-item__compare__icon').on('click', (event) => {
       event.preventDefault();
       const target = $(event.currentTarget);
-      const compareItemInfo = target.find('.car-item__compare__info');
       const id = target.data('compare-id');
       let compare = $.cookie('compare').split(',');
       compare = $.grep(compare, function(n) { return (n === 0 || n) && n !== ''; });
       compare = new Set(compare);
       $('.car-item__compare__info').removeClass('active');
 
-      if (target.hasClass('active') && compareItemInfo.hasClass('active')) {
-        compareItemInfo.removeClass('active');
+      if (target.hasClass('active')) {
+        target.removeClass('active');
+        compare.delete(String(id));
+        target.find('.car-item__compare__hint .regular-text-s').html(`
+          Добавить <br/> в сравнение
+        `);
       } else {
         compare.add(String(id));
+        target.find('.car-item__compare__hint .regular-text-s').html(`
+          Добавлено <br/> в сравнение
+        `);
         $('.compare-added-count').text(`${compare.size} авто`);
         target.addClass('active');
-        compareItemInfo.addClass('active');
       }
 
       $.cookie('compare', Array.from(compare));

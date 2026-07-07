@@ -526,6 +526,21 @@ window.app = {
     }
 
     function submitForm(formData, formElement) {
+      if (typeof Comagic !== 'undefined'
+        && typeof Comagic.getCredentials === 'function') {
+        const credentials = Comagic.getCredentials();
+        if (formData instanceof FormData) {
+          Object.keys(credentials).forEach((key) => {
+            formData.append('comagic_' + key, credentials[key]);
+          });
+          console.log('Comagic данные добавлены в FormData');
+        } else if (typeof formData === 'object' && formData !== null) {
+          Object.keys(credentials).forEach((key) => {
+            formData['comagic_' + key] = credentials[key];
+          });
+          console.log('Comagic данные добавлены в объект');
+        }
+      }
       ajaxRequest($(formElement).data('action'), $(formElement).data('method'), formData, function(response) {
         if (window.verification !== true) {
           eval(response.reachgoal);
